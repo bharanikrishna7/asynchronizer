@@ -2,6 +2,14 @@ package net.chekuri.asynchronizer.task.state
 
 import net.chekuri.asynchronizer.task.AsynchronizerTask
 
+/**
+  * `Asynchronizer Task State` to handle
+  * processing when Asynchronizer Task's
+  * execution has been interrupted.
+  *
+  * @param task asynchronizer task
+  * @tparam T Data Type associated with the result.
+  */
 class InterruptedTaskState[T](task: AsynchronizerTask[T])
     extends FailureTaskState[T](task) {
   override val name = "InterruptedTaskState"

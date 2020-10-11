@@ -3,6 +3,14 @@ package net.chekuri.asynchronizer.task.state
 import net.chekuri.asynchronizer.behaviors.LoggingBehavior
 import net.chekuri.asynchronizer.task.AsynchronizerTask
 
+/**
+  * `Asynchronizer Task State` to handle
+  * processing when Asynchronizer Task's
+  * execution is in processing state.
+  *
+  * @param task asynchronizer task
+  * @tparam T Data Type associated with the result.
+  */
 class ProcessingTaskState[T](task: AsynchronizerTask[T])
     extends AbstractTaskState[T]
     with LoggingBehavior {

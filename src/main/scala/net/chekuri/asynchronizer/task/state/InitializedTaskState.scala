@@ -6,6 +6,13 @@ import net.chekuri.asynchronizer.task.AsynchronizerTask
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
+/**
+  * `Asynchronizer Task State` to handle
+  * processing when Asynchronizer Task
+  * has been correctly initialized.
+  * @param asynchronizerTask asynchronizer task
+  * @tparam T Data Type associated with the result.
+  */
 class InitializedTaskState[T](asynchronizerTask: AsynchronizerTask[T])
     extends AbstractTaskState[T]
     with ThreadBehavior
