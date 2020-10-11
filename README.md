@@ -11,6 +11,8 @@ This project will provide 2 APIs:
 API to execute a future Task with better debugging and option to cancel* the task.
 Current abilities:
 * superfine debugging (thanks to state design pattern).
+    * ability to capture time spent executing a task (even when it fails).
+    * states help in relatively easy visualization when trying to understand what state a task is in.
 * ability to cancel task.
 * ability to wait set amount of time and try to retrieve results.
 * unsafe asynchronous cancellation (useful for debugging / haven't found any suitable use case for production scenario). 
