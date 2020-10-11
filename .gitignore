@@ -1,2 +1,9 @@
-*.class
 *.log
+target
+*.class
+.idea
+*.iml
+.metals
+.bloop
+.project/target
+.DS_Store
