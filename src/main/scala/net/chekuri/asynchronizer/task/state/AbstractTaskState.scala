@@ -1,11 +1,10 @@
 package net.chekuri.asynchronizer.task.state
 
-/**
- * Interface / trait to define states
- * and behaviours to efficiently handle
- * AsynchronousTask object
- * @tparam T Data Type associated with the result.
- */
+/** Interface / trait to define states
+  * and behaviours to efficiently handle
+  * AsynchronousTask object
+  * @tparam T Data Type associated with the result.
+  */
 trait AbstractTaskState[T] {
   val name: String = "AbstractTaskState"
 

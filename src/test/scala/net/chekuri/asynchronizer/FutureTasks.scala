@@ -21,4 +21,27 @@ object FutureTasks extends ThreadBehavior {
   ): Future[Long] = Future {
     randomizer.nextLong(maxValue)
   }(ec)
+
+  def poorlyImplementedExponentOperation(
+      base: Long,
+      power: Int,
+      ec: ExecutionContext
+  ): Future[BigInt] = Future {
+    val c_base = BigInt.apply(base)
+    var result = BigInt.apply(1)
+    for (_ <- 0 to power) {
+      result = result.*(c_base)
+    }
+    result
+  }(ec)
+
+  def futureExceptionTask(
+      exceptionMessage: String,
+      delayInSeconds: Long = 0,
+      ec: ExecutionContext
+  ): Future[Boolean] = Future {
+    this.SleepCurrentThread(delayInSeconds)
+    throw new Exception(exceptionMessage)
+    false
+  }(ec)
 }

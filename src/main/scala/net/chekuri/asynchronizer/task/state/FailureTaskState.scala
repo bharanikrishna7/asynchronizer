@@ -2,8 +2,7 @@ package net.chekuri.asynchronizer.task.state
 
 import net.chekuri.asynchronizer.task.AsynchronizerTask
 
-/**
-  * `Asynchronizer Task State` to handle
+/** `Asynchronizer Task State` to handle
   * processing when Asynchronizer Task's
   * execution failed.
   * @param task asynchronizer task

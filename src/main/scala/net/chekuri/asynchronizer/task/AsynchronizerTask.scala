@@ -28,6 +28,7 @@ class AsynchronizerTask[T](
   val is_cancelled: AtomicBoolean = new AtomicBoolean(false)
   val is_finished: AtomicBoolean = new AtomicBoolean(false)
   var result: Option[T] = None
+  var duration_in_ms: Option[Double] = None
   var exception: Option[Throwable] = None
 
   /* variable to hold initial state */

@@ -1,13 +1,14 @@
 package net.chekuri.asynchronizer.task.state
 
+import java.lang.System.nanoTime
+
 import net.chekuri.asynchronizer.behaviors.{LoggingBehavior, ThreadBehavior}
 import net.chekuri.asynchronizer.task.AsynchronizerTask
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-/**
-  * `Asynchronizer Task State` to handle
+/** `Asynchronizer Task State` to handle
   * processing when Asynchronizer Task
   * has been correctly initialized.
   * @param asynchronizerTask asynchronizer task
@@ -29,15 +30,22 @@ class InitializedTaskState[T](asynchronizerTask: AsynchronizerTask[T])
     logger.debug("Changing state to ProcessingTaskState.")
     asynchronizerTask.changeState(asynchronizerTask.state_processing)
     logger.debug("Changed state to ProcessingTaskState.")
+    val start_time: Double = nanoTime
     task.andThen {
       case Success(value) =>
         if (shouldUpdateAsyncTask()) {
+          val end_time: Double = nanoTime
+          val duration_in_ms: Double = (end_time - start_time) / 1000000d
+          asynchronizerTask.duration_in_ms = Some(duration_in_ms)
           asynchronizerTask.result = Some(value)
           asynchronizerTask.is_finished.set(true)
           asynchronizerTask.changeState(asynchronizerTask.state_success)
         }
       case Failure(throwable) =>
         if (shouldUpdateAsyncTask()) {
+          val end_time: Double = nanoTime
+          val duration_in_ms: Double = (end_time - start_time) / 1000000d
+          asynchronizerTask.duration_in_ms = Some(duration_in_ms)
           asynchronizerTask.exception = Some(throwable)
           asynchronizerTask.is_finished.set(true)
           asynchronizerTask.changeState(asynchronizerTask.state_failure)

@@ -3,8 +3,7 @@ package net.chekuri.asynchronizer.task.state
 import net.chekuri.asynchronizer.behaviors.LoggingBehavior
 import net.chekuri.asynchronizer.task.AsynchronizerTask
 
-/**
-  * `Asynchronizer Task State` to handle
+/** `Asynchronizer Task State` to handle
   * processing when Asynchronizer Task's
   * execution is in processing state.
   *
@@ -14,7 +13,7 @@ import net.chekuri.asynchronizer.task.AsynchronizerTask
 class ProcessingTaskState[T](task: AsynchronizerTask[T])
     extends AbstractTaskState[T]
     with LoggingBehavior {
-  override val name = "InitializedTaskState"
+  override val name = "ProcessingTaskState"
 
   /** Method to interrupt the currently
     * executing async task.
