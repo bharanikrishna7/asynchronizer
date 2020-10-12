@@ -15,20 +15,21 @@ object AsynchronizerConstants {
   ) {
     override def toString: String = {
       val appender: StringBuilder = new StringBuilder()
-      appender.append("-----------")
-      appender.append("| Results |")
-      appender.append("-----------")
+      appender.append("\n-----------")
+      appender.append("\n| Results |")
+      appender.append("\n-----------")
 
       for (result <- results) {
         appender.append(result.toString)
         appender.append('\n')
       }
-      appender.append(s"Total Tasks      : $total_tasks\n")
-      appender.append(s"Executed Tasks   : $executed_tasks\n")
-      appender.append(s"Passed Tasks     : $passed_tasks\n")
-      appender.append(s"Failed Tasks     : $failed_tasks\n")
-      appender.append(s"Failures Allowed : $failed_tasks\n")
-      appender.append(s"Was Cancelled    : $failed_tasks")
+      appender.append(s"Total Tasks        : $total_tasks\n")
+      appender.append(s"Executed Tasks     : $executed_tasks\n")
+      appender.append(s"Passed Tasks       : $passed_tasks\n")
+      appender.append(s"Failed Tasks       : $failed_tasks\n")
+      appender.append(s"Execution Duration : $duration_in_ms ms\n")
+      appender.append(s"Failures Allowed   : $failures_allowed\n")
+      appender.append(s"Was Cancelled      : $was_cancelled")
       appender.toString()
     }
   }

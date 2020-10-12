@@ -44,4 +44,14 @@ object FutureTasks extends ThreadBehavior {
     throw new Exception(exceptionMessage)
     false
   }(ec)
+
+  def futureBigIntException(
+      exceptionMessage: String,
+      delayInSeconds: Long = 0,
+      ec: ExecutionContext
+  ): Future[BigInt] = Future {
+    this.SleepCurrentThread(delayInSeconds)
+    throw new Exception(exceptionMessage)
+    BigInt.apply(100)
+  }(ec)
 }

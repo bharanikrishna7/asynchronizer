@@ -109,12 +109,8 @@ class Asynchronizer[T](
       results = this.asynchronizer_results,
       total_tasks = this.total_task_count,
       executed_tasks = this.executed_tasks.get(),
-      passed_tasks = this.asynchronizer_results.count(x =>
-        x.taskExecutionState.equals("SuccessTaskState")
-      ),
-      failed_tasks = this.asynchronizer_results.count(x =>
-        x.taskExecutionState.equals("FailureTaskState")
-      ),
+      passed_tasks = this.successful_tasks.get(),
+      failed_tasks = this.failure_tasks.get(),
       duration_in_ms = computeExecutionTimeInMillis,
       failures_allowed = this.allowFailures,
       was_cancelled = this.is_cancelled.get()

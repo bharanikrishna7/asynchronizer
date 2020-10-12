@@ -3,7 +3,7 @@ package net.chekuri.asynchronizer.state
 import java.lang.System.nanoTime
 
 import net.chekuri.asynchronizer.Asynchronizer
-import net.chekuri.asynchronizer.behaviors.LoggingBehavior
+import net.chekuri.asynchronizer.behaviors.{LoggingBehavior, ThreadBehavior}
 import net.chekuri.asynchronizer.task.TaskConstants
 import net.chekuri.asynchronizer.task.TaskConstants.TaskExecutionResults
 
@@ -12,6 +12,7 @@ import scala.util.{Failure, Success}
 
 class InitializedAsynchronizerState[T](asynchronizer: Asynchronizer[T])
     extends AbstractAsynchronizerState[T]
+    with ThreadBehavior
     with LoggingBehavior {
   override val name = "InitializedAsynchronizerState"
   implicit val ec: ExecutionContext = asynchronizer.getExecutionContext
@@ -42,9 +43,6 @@ class InitializedAsynchronizerState[T](asynchronizer: Asynchronizer[T])
         .changeState(asynchronizer.asynchronizer_tasks(index).state_processing)
       asynchronizer.asynchronizer_tasks(index).getTask.andThen {
         case Success(value) =>
-          logger.warn(
-            s"Asynchronizer Results Size: ${asynchronizer.asynchronizer_results.size}"
-          )
           if (
             shouldUpdateAsyncTask(
               asynchronizer.asynchronizer_results(index) == null
@@ -52,6 +50,8 @@ class InitializedAsynchronizerState[T](asynchronizer: Asynchronizer[T])
           ) {
             asynchronizer.executed_tasks
               .set(asynchronizer.executed_tasks.get() + 1)
+            asynchronizer.successful_tasks
+              .set(asynchronizer.successful_tasks.get() + 1)
             val end_time: Double = nanoTime
             val duration_in_ms: Double = (end_time - start_time) / 1000000d
             asynchronizer.asynchronizer_tasks(index).duration_in_ms =
@@ -84,6 +84,9 @@ class InitializedAsynchronizerState[T](asynchronizer: Asynchronizer[T])
           ) {
             asynchronizer.executed_tasks
               .set(asynchronizer.executed_tasks.get() + 1)
+            asynchronizer.failure_tasks
+              .set(asynchronizer.failure_tasks.get() + 1)
+
             val end_time: Double = nanoTime
             val duration_in_ms: Double = (end_time - start_time) / 1000000d
             asynchronizer.asynchronizer_tasks(index).duration_in_ms =
@@ -91,6 +94,7 @@ class InitializedAsynchronizerState[T](asynchronizer: Asynchronizer[T])
             asynchronizer.asynchronizer_tasks(index).exception = Some(throwable)
             asynchronizer.execution_end_nanotime = nanoTime
             asynchronizer.asynchronizer_tasks(index).is_finished.set(true)
+            // update task state.
             if (
               TaskConstants
                 .checkIfAsynchronizerTaskInterruptedException(throwable)
@@ -116,25 +120,57 @@ class InitializedAsynchronizerState[T](asynchronizer: Asynchronizer[T])
                 duration_in_ms,
                 asynchronizer.asynchronizer_tasks(index).state_current.name
               )
-            if (checkAllCompleted && asynchronizer.getAllowFailures) {
-              asynchronizer.changeState(asynchronizer.state_completed)
-              asynchronizer.execution_end_nanotime = nanoTime
+            if (!asynchronizer.getAllowFailures) {
               asynchronizer.ready.set(true)
+              logger.warn("Fail on exception is set to false.")
+              logger.warn("Will throw encountered exception")
+              asynchronizer.execution_end_nanotime = nanoTime
+              logger.warn("Interrupt all unfinished tasks.")
+              this.interruptUnfinishedTasks(start_time)
+              asynchronizer.changeState(asynchronizer.state_failed)
+            } else {
+              logger.info(
+                s"Asynchronizer Tasks : ${asynchronizer.executed_tasks.get()}"
+              )
+              logger.info(
+                s"Asynchronizer State : ${asynchronizer.state_current.name}"
+              )
+              if (asynchronizer.getAllowFailures) {
+                asynchronizer.changeState(asynchronizer.state_completed)
+                asynchronizer.execution_end_nanotime = nanoTime
+                asynchronizer.ready.set(true)
+              }
             }
-          }
-          if (!asynchronizer.getAllowFailures) {
-            logger.warn("Fail on exception is set to false.")
-            logger.warn("Will throw encountered exception")
-            asynchronizer.execution_end_nanotime = nanoTime
-            throw throwable
-            asynchronizer.changeState(asynchronizer.state_failed)
-            logger
-              .trace("Changing results ready value to true for asynchronizer.")
-            asynchronizer.ready.set(true)
           }
       }
     }
     logger.info("All tasks have started processing.")
+  }
+
+  private def interruptUnfinishedTasks(start_time: Double): Unit = {
+    val end_time: Double = nanoTime
+    val duration_in_ms: Double = (end_time - start_time) / 1000000d
+    val throwable = new TaskConstants.AsynchronizerTaskInterruptedException(
+      this.getCurrentThreadId
+    )
+    for (index <- asynchronizer.asynchronizer_tasks.indices) {
+      if (
+        asynchronizer
+          .asynchronizer_tasks(index)
+          .state_current
+          .name
+          .equals("ProcessingTaskState")
+      ) {
+        asynchronizer.asynchronizer_results(index) = TaskExecutionResults[T](
+          None,
+          Some(throwable),
+          duration_in_ms,
+          asynchronizer.asynchronizer_tasks(index).state_interrupted.name
+        )
+        // stop processing task.
+        asynchronizer.asynchronizer_tasks(index).interrupt
+      }
+    }
   }
 
   private def shouldUpdateAsyncTask(
