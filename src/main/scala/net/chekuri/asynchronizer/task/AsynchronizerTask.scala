@@ -4,6 +4,7 @@ import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.atomic.AtomicBoolean
 
 import net.chekuri.asynchronizer.behaviors.{LoggingBehavior, ThreadBehavior}
+import net.chekuri.asynchronizer.task.TaskConstants.AsynchronizerTaskInterruptedException
 import net.chekuri.asynchronizer.task.state._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -21,8 +22,8 @@ class AsynchronizerTask[T](
     with ThreadBehavior {
 
   /* throwable object when task is interrupted */
-  val THROW_INTERRUPT = new Throwable(
-    s"Thread ${this.getCurrentThreadId} was interrupted."
+  val THROW_INTERRUPT = new AsynchronizerTaskInterruptedException(
+    this.getCurrentThreadId
   )
 
   val is_cancelled: AtomicBoolean = new AtomicBoolean(false)

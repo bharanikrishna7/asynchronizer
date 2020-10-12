@@ -6,7 +6,7 @@ package net.chekuri.asynchronizer.task.state
   * @tparam T Data Type associated with the result.
   */
 trait AbstractTaskState[T] {
-  val name: String = "AbstractTaskState"
+  val name: String
 
   /** Method to initialize task.
     */

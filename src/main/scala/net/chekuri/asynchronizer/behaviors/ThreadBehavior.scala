@@ -41,6 +41,13 @@ trait ThreadBehavior {
     */
   def SleepCurrentThread(sleepDurationInSeconds: Long): Unit = {
     val convert_to_milliseconds: Long = sleepDurationInSeconds * 1000
-    Thread.sleep(convert_to_milliseconds)
+    this.SleepCurrentThreadInMillis(convert_to_milliseconds)
+  }
+
+  /** Method to sleep current thread.
+    * @param sleepDurationInMillis sleep duration in milli seconds.
+    */
+  def SleepCurrentThreadInMillis(sleepDurationInMillis: Long): Unit = {
+    Thread.sleep(sleepDurationInMillis)
   }
 }
