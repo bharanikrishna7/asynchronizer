@@ -22,7 +22,7 @@ class AsynchronizerTaskSpec
     logger.debug("Future task declared.")
     logger.debug("Initializing asynchronizer task.")
     val aTask: AsynchronizerTask[Unit] =
-      new AsynchronizerTask[Unit](futureTask, executionContext)
+      new AsynchronizerTask[Unit](futureTask)
     logger.debug("Asynchronizer task initialized.")
     logger.debug("Start processing task.")
     aTask.process()
@@ -36,11 +36,11 @@ class AsynchronizerTaskSpec
   "AsynchronizerTask" should "correctly execute and asynchronous task with simple data type value" in {
     logger.debug("Declaring future task.")
     val futureTask: Future[Long] =
-      FutureTasks.futureRandomNumberTask(200, executionContext)
+      FutureTasks.futureRandomNumberTask(200, 10, false, executionContext)
     logger.debug("Future task declared.")
     logger.debug("Initializing asynchronizer task.")
     val aTask: AsynchronizerTask[Long] =
-      new AsynchronizerTask[Long](futureTask, executionContext)
+      new AsynchronizerTask[Long](futureTask)
     logger.debug("Asynchronizer task initialized.")
     logger.debug("Start processing task.")
     aTask.process()
@@ -61,7 +61,7 @@ class AsynchronizerTaskSpec
     logger.debug("Future task declared.")
     logger.debug("Initializing asynchronizer task.")
     val aTask: AsynchronizerTask[Unit] =
-      new AsynchronizerTask[Unit](futureTask, executionContext)
+      new AsynchronizerTask[Unit](futureTask)
     logger.debug("Asynchronizer task initialized.")
     logger.debug("Start processing task.")
     aTask.process()
@@ -77,7 +77,7 @@ class AsynchronizerTaskSpec
     logger.debug("Future task declared.")
     logger.debug("Initializing asynchronizer task.")
     val aTask: AsynchronizerTask[Unit] =
-      new AsynchronizerTask[Unit](futureTask, executionContext)
+      new AsynchronizerTask[Unit](futureTask)
     logger.debug("Asynchronizer task initialized.")
     logger.debug("Start processing task.")
     aTask.process()
@@ -100,7 +100,7 @@ class AsynchronizerTaskSpec
     logger.debug("Future task declared.")
     logger.info("Initializing asynchronizer task.")
     val aTask: AsynchronizerTask[BigInt] =
-      new AsynchronizerTask[BigInt](futureTask, executionContext)
+      new AsynchronizerTask[BigInt](futureTask)
     logger.info("Asynchronizer task initialized.")
     logger.info("Asynchronizer should now be in 'InitializedTaskState'")
     assert(aTask.state_current == aTask.state_initialized)
@@ -126,7 +126,7 @@ class AsynchronizerTaskSpec
     logger.debug("Future task declared.")
     logger.info("Initializing asynchronizer task.")
     val aTask: AsynchronizerTask[Unit] =
-      new AsynchronizerTask[Unit](futureTask, executionContext)
+      new AsynchronizerTask[Unit](futureTask)
     logger.info("Asynchronizer task initialized.")
     logger.info("Asynchronizer should now be in 'InitializedTaskState'")
     assert(aTask.state_current == aTask.state_initialized)
@@ -146,11 +146,11 @@ class AsynchronizerTaskSpec
     val exception_message: String =
       "Asynchronizer Task State Failure Exception Message"
     val futureTask: Future[Boolean] =
-      FutureTasks.futureExceptionTask(exception_message, 2L, executionContext)
+      FutureTasks.futureExceptionTask(exception_message, 1L, executionContext)
     logger.debug("Future task declared.")
     logger.info("Initializing asynchronizer task.")
     val aTask: AsynchronizerTask[Boolean] =
-      new AsynchronizerTask[Boolean](futureTask, executionContext)
+      new AsynchronizerTask[Boolean](futureTask)
     logger.info("Asynchronizer task initialized.")
     logger.info("Asynchronizer should now be in 'InitializedTaskState'")
     assert(aTask.state_current == aTask.state_initialized)
@@ -160,7 +160,7 @@ class AsynchronizerTaskSpec
     assert(aTask.state_current == aTask.state_processing)
     logger.info("Wait for task to complete.")
     while (!aTask.is_finished.get()) {
-      this.SleepCurrentThread(1L)
+      this.SleepCurrentThreadInMillis(100L)
     }
     logger.info("The task should have thrown exception.")
     logger.info(

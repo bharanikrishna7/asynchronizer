@@ -74,6 +74,17 @@ class Asynchronizer[T](
     )
   }
 
+  /** Method to retrieve results.
+    *
+    * This is unsafe method and will throw exception
+    * if the Asynchronizer is not in appropriate state.
+    *
+    * @return Asynchronizer task execution results.
+    */
+  def results(): Array[TaskExecutionResults[T]] = {
+    state_current.results()
+  }
+
   /** Method to get list of tasks supplied to the class.
     *
     * @return returns list of tasks supplied to the class.

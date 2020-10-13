@@ -17,9 +17,17 @@ object FutureTasks extends ThreadBehavior {
 
   def futureRandomNumberTask(
       maxValue: Long,
+      delayInMillis: Long,
+      throwException: Boolean = false,
       ec: ExecutionContext
   ): Future[Long] = Future {
-    randomizer.nextLong(maxValue)
+    this.SleepCurrentThreadInMillis(delayInMillis)
+    if (throwException) {
+      throw new Exception("Future Random Number Task Exception.")
+    } else {
+      randomizer.nextLong(maxValue)
+    }
+
   }(ec)
 
   def poorlyImplementedExponentOperation(

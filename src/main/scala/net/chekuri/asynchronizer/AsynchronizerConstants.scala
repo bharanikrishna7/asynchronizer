@@ -20,8 +20,10 @@ object AsynchronizerConstants {
       appender.append("\n-----------")
 
       for (result <- results) {
-        appender.append(result.toString)
-        appender.append('\n')
+        if (result != null) {
+          appender.append(result.toString)
+          appender.append('\n')
+        }
       }
       appender.append(s"Total Tasks        : $total_tasks\n")
       appender.append(s"Executed Tasks     : $executed_tasks\n")
