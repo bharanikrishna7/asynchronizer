@@ -96,13 +96,13 @@ class AsynchronizerSpec
     logger.info("Start processing tasks.")
     asynchronizer.process()
     while (!asynchronizer.ready.get()) {
-      SleepCurrentThreadInMillis(3000)
+      SleepCurrentThreadInMillis(7000)
     }
     val report = asynchronizer.generateAsynchronizerExecutionReport
     logger.debug("Printing Execution Report")
     logger.info(report.toString)
+    assert(asynchronizer.passed_tasks == 20)
     assert(report.executed_tasks > report.passed_tasks)
-    assert(asynchronizer.getSuccessResultsCount == 20)
     assert(report.failed_tasks == 40)
   }
 
