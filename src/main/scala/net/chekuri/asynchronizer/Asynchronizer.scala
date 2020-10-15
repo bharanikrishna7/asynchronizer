@@ -24,9 +24,9 @@ class Asynchronizer[T](
 
   logger.trace("Setting up class variables.")
   val total_task_count: Int = tasks.size
-  val executed_tasks: AtomicInteger = new AtomicInteger(0)
-  val successful_tasks: AtomicInteger = new AtomicInteger(0)
-  val failure_tasks: AtomicInteger = new AtomicInteger(0)
+  var executed_task_count: Int = 0
+  var completed_task_count: Int = 0
+  var failed_task_count: Int = 0
   val is_cancelled: AtomicBoolean = new AtomicBoolean(false)
   val ready: AtomicBoolean = new AtomicBoolean(false)
   var execution_start_nanotime: Long = 0
@@ -119,9 +119,9 @@ class Asynchronizer[T](
     AsynchronizerExecutionReport[T](
       results = this.asynchronizer_results,
       total_tasks = this.total_task_count,
-      executed_tasks = this.executed_tasks.get(),
-      passed_tasks = this.successful_tasks.get(),
-      failed_tasks = this.failure_tasks.get(),
+      executed_tasks = this.getResultsPopulatedCount,
+      passed_tasks = this.getSuccessResultsCount,
+      failed_tasks = this.getFailResultsCount,
       duration_in_ms = computeExecutionTimeInMillis,
       failures_allowed = this.allowFailures,
       was_cancelled = this.is_cancelled.get()
@@ -141,5 +141,35 @@ class Asynchronizer[T](
     } else {
       (execution_end_nanotime - execution_start_nanotime) / 1000000d
     }
+  }
+
+  def getResultsPopulatedCount: Int = {
+    var value: Int = 0
+    for (result <- asynchronizer_results) {
+      if (result != null) {
+        value += 1
+      }
+    }
+    value
+  }
+
+  def getSuccessResultsCount: Int = {
+    var value: Int = 0
+    for (result <- asynchronizer_results) {
+      if (result != null && result.exception.isEmpty) {
+        value += 1
+      }
+    }
+    value
+  }
+
+  def getFailResultsCount: Int = {
+    var value: Int = 0
+    for (result <- asynchronizer_results) {
+      if (result != null && result.exception.isDefined) {
+        value += 1
+      }
+    }
+    value
   }
 }
