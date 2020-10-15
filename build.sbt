@@ -14,7 +14,6 @@ lazy val root = (project in file("."))
   .enablePlugins(BuildInfoPlugin)
   .settings(
     scalaVersion := scala21303,
-    crossScalaVersions := supportedScalaVersions,
     // build info plugin settings
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
     buildInfoPackage := "build",
