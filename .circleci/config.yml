@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/asynchronizer
     docker:
-      - image: hseeberger/scala-sbt:graalvm
+      - image: mozilla/sbt:8u232_1.3.13
     environment:
       - SBT_VERSION: 1.4.0
       - CODECOV_TOKEN: "7662c218-08d5-4137-9a27-d97c7a1a5194"
