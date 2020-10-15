@@ -3,10 +3,10 @@ jobs:
   build:
     working_directory: ~/floki
     docker:
-      - image: hseeberger/scala-sbt:8u212_1.2.8_2.12.8
+      - image: hseeberger/scala-sbt:graalvm
     environment:
       - SBT_VERSION: 1.2.8
-      - CODECOV_TOKEN: "653c154f-486e-494c-8087-36c1ddd87018"
+      - CODECOV_TOKEN: "7662c218-08d5-4137-9a27-d97c7a1a5194"
     steps:
       - run: echo 'export ARTIFACT_BUILD=$CIRCLE_PROJECT_REPONAME-$CIRCLE_BUILD_NUM.zip ' >> $BASH_ENV
       - run: echo 'export SBT_OPTS="-XX:MaxMetaspaceSize=512m -Xms1024m -Xmx1024m" ' >> $BASH_ENV
