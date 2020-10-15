@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/floki
+    docker:
+      - image: hseeberger/scala-sbt:8u212_1.2.8_2.12.8
+    environment:
+      - SBT_VERSION: 1.2.8
+      - CODECOV_TOKEN: "653c154f-486e-494c-8087-36c1ddd87018"
+    steps:
+      - run: echo 'export ARTIFACT_BUILD=$CIRCLE_PROJECT_REPONAME-$CIRCLE_BUILD_NUM.zip ' >> $BASH_ENV
+      - run: echo 'export SBT_OPTS="-XX:MaxMetaspaceSize=512m -Xms1024m -Xmx1024m" ' >> $BASH_ENV
+      - checkout
+      - run:
+          name: Compile & Test ASYNCHRONIZER
+          command: cat /dev/null | sbt +clean +compile coverage test run coverageReport
+      - run:
+          name: Push Coverage Report to Codecov Dashboard
+          command: bash <(curl -s https://codecov.io/bash)
+      - store_test_results:
+          path: target/test-reports
+
