@@ -1,11 +1,11 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/floki
+    working_directory: ~/asynchronizer
     docker:
       - image: hseeberger/scala-sbt:graalvm
     environment:
-      - SBT_VERSION: 1.2.8
+      - SBT_VERSION: 1.4.0
       - CODECOV_TOKEN: "7662c218-08d5-4137-9a27-d97c7a1a5194"
     steps:
       - run: echo 'export ARTIFACT_BUILD=$CIRCLE_PROJECT_REPONAME-$CIRCLE_BUILD_NUM.zip ' >> $BASH_ENV
