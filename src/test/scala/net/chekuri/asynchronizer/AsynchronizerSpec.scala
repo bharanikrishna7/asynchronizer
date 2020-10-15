@@ -101,8 +101,8 @@ class AsynchronizerSpec
     val report = asynchronizer.generateAsynchronizerExecutionReport
     logger.debug("Printing Execution Report")
     logger.info(report.toString)
-    assert(report.passed_tasks == 20)
     assert(report.executed_tasks > report.passed_tasks)
+    assert(asynchronizer.getSuccessResultsCount == 20)
     assert(report.failed_tasks == 40)
   }
 
