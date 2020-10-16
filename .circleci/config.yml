@@ -13,7 +13,7 @@ jobs:
       - checkout
       - run:
           name: Compile & Test ASYNCHRONIZER
-          command: cat /dev/null | sbt +clean +compile coverage test coverageReport
+          command: cat /dev/null | sbt clean compile coverage test coverageReport
       - run:
           name: Push Coverage Report to Codecov Dashboard
           command: bash <(curl -s https://codecov.io/bash)
