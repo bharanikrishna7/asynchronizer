@@ -21,7 +21,7 @@ class InitialAsynchronizerState[T](asynchronizer: Asynchronizer[T])
     if (asynchronizer.is_cancelled.get()) {
       new Throwable("Asynchronizer has been initialized incorrectly.")
     }
-    if (asynchronizer.executed_tasks.get() > 0) {
+    if (asynchronizer.asynchronizer_results != null) {
       new Throwable(
         "It appears that the tasks has already started execution. Asynchronizer should not be in this state once the tasks started producing results."
       )
@@ -33,6 +33,6 @@ class InitialAsynchronizerState[T](asynchronizer: Asynchronizer[T])
       asynchronous_tasks(index) =
         new AsynchronizerTask[T](asynchronizer.getTasks(index))
     }
-    asynchronous_tasks
+    asynchronous_tasks.reverse
   }
 }

@@ -73,10 +73,10 @@ class AsynchronizerSpec
   "Asynchronizer" should "correctly execute all tasks when allow failures is set to true but we are expecting some tasks to fail" in {
     var tasks: List[Future[BigInt]] = List[Future[BigInt]]()
     logger.info("Populating tasks.")
-    for (index <- 0 to 63) {
+    for (index <- 0 to 59) {
       val base = FutureTasks.randomizer.nextLong(50000)
       val exp = FutureTasks.randomizer.nextInt(5000)
-      if (index < 20) {
+      if (index < 20 || index >= 40) {
         tasks = FutureTasks.futureBigIntException(
           "Asynchronizer tasks fail but allow failures is true test exception.",
           1,
@@ -96,14 +96,14 @@ class AsynchronizerSpec
     logger.info("Start processing tasks.")
     asynchronizer.process()
     while (!asynchronizer.ready.get()) {
-      SleepCurrentThreadInMillis(3000)
+      SleepCurrentThreadInMillis(7000)
     }
     val report = asynchronizer.generateAsynchronizerExecutionReport
     logger.debug("Printing Execution Report")
     logger.info(report.toString)
-    assert(report.passed_tasks == 44)
+    assert(asynchronizer.passed_tasks == 20)
     assert(report.executed_tasks > report.passed_tasks)
-    assert(report.failed_tasks > 0)
+    assert(report.failed_tasks == 40)
   }
 
   "Asynchronizer" should "correctly throw exception when fail on exception is set to true and we can guarantee few exception tasks" in {
@@ -138,7 +138,6 @@ class AsynchronizerSpec
     SleepCurrentThreadInMillis(4000)
     val report = asynchronizer.generateAsynchronizerExecutionReport
     logger.info(report.toString)
-    assert(asynchronizer.total_task_count > asynchronizer.executed_tasks.get())
     assert(asynchronizer.state_current == asynchronizer.state_failed)
     assertThrows[Exception](asynchronizer.results())
   }
@@ -169,7 +168,7 @@ class AsynchronizerSpec
     logger.info("Asynchronizer should now be in 'ProcessingAsynchronizerState'")
     assert(asynchronizer.state_current == asynchronizer.state_processing)
     while (!asynchronizer.ready.get()) {
-      SleepCurrentThreadInMillis(1000)
+      SleepCurrentThreadInMillis(4000)
     }
     logger.info(
       "We ensured that at least 1 task will fail. And Allow Failures = FALSE"

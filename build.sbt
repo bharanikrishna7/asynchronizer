@@ -1,5 +1,5 @@
 name := "asynchronizer"
-version := "0.3"
+version := "0.4"
 organization := "net.chekuri"
 developers := List(
   Developer(
@@ -14,7 +14,6 @@ lazy val root = (project in file("."))
   .enablePlugins(BuildInfoPlugin)
   .settings(
     scalaVersion := scala21303,
-    crossScalaVersions := supportedScalaVersions,
     // build info plugin settings
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
     buildInfoPackage := "build",
