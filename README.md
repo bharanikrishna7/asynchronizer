@@ -33,3 +33,4 @@ API to execute bunch of Asynchronous Tasks with abilities like:
 * Better implementation of task watchers (executed, passed, failed task count). Now watchers in asynchronizers are updated at the end of every task (completion / failure). This prevents a bug which previously caused sometimes ready variable to be not marked appropriately or state being incorrect.
 * Updated unit tests to cover scenario where errors occur at both start and end of the list of tasks while middle tasks run successfully.
 * Added CircleCI for Continuous Integration and Codecov for Coverage reporting.
+* Added compile / build settings in build.sbt file. Now users can generate uber-jar using `sbt assembly` command

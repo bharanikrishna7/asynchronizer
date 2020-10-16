@@ -26,7 +26,17 @@ lazy val root = (project in file("."))
     // scalatest libraries (test only) + unit test framework
     libraryDependencies ++= Seq(scalactic_library, scalatest_library),
     // set code reformat on compile to true
-    scalafmtOnCompile := true
+    scalafmtOnCompile := true,
+    // disable generating jar on compile
+    Compile / packageBin / publishArtifact := false,
+    // compiled jar file name
+    assemblyJarName := s"${name.value}_${scalaBinaryVersion.value}_${version.value}.jar",
+    // disable `package` artifact in assembly generated during compile process
+    artifact in (Compile, assembly) := {
+      (artifact in (Compile, assembly)).value
+    },
+    // add all necessary artifacts
+    addArtifact(artifact in (Compile, assembly), assembly)
   )
 
 // library versions
@@ -48,3 +58,14 @@ lazy val scala21210 = "2.12.10"
 lazy val scala21209 = "2.12.9"
 lazy val scala21208 = "2.12.8"
 lazy val supportedScalaVersions = List(scala21303, scala21300, scala21210, scala21209, scala21208)
+
+// Assembly Strategy when encountering different files with same name.
+assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", "LICENSE")               => MergeStrategy.discard
+  case PathList("META-INF", "MANIFEST.MF")           => MergeStrategy.discard
+  case PathList("META-INF", xs @ _*)                 => MergeStrategy.discard
+  case "application.conf"                            => MergeStrategy.concat
+  case "reference.conf"                              => MergeStrategy.concat
+  case "play/reference-overrides.conf"               => MergeStrategy.concat
+  case _                                             => MergeStrategy.first
+}
