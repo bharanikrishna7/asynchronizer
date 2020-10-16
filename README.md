@@ -1,6 +1,11 @@
 # ASYNCHRONIZER
+CircleCI Status : [![CircleCI](https://circleci.com/gh/bharanikrishna7/asynchronizer/tree/master.svg?style=svg)](https://circleci.com/gh/bharanikrishna7/asynchronizer/tree/master)
+
+Coverage Report: [![codecov](https://codecov.io/gh/bharanikrishna7/asynchronizer/branch/master/graph/badge.svg)](https://codecov.io/gh/bharanikrishna7/asynchronizer)
+
 ## INTRODUCTION
 This project aims to simplify multi-threading in Scala (also to some extent Java).
+
 
 This project will provide 2 APIs:
 1. AsynchronousTask
