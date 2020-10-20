@@ -36,7 +36,7 @@ class AsynchronizerCoreSpec
     }
     val report = asynchronizer.generateAsynchronizerExecutionReport
     logger.debug("Printing Execution Report")
-    logger.info(report.toString)
+    logger.debug(report.toString)
     assert(report.total_tasks == report.executed_tasks)
     assert(report.executed_tasks == report.passed_tasks)
     assert(report.failed_tasks == 0)
@@ -64,7 +64,7 @@ class AsynchronizerCoreSpec
     }
     val report = asynchronizer.generateAsynchronizerExecutionReport
     logger.debug("Printing Execution Report")
-    logger.info(report.toString)
+    logger.debug(report.toString)
     assert(report.total_tasks == report.executed_tasks)
     assert(report.executed_tasks == report.passed_tasks)
     assert(report.failed_tasks == 0)
@@ -100,7 +100,7 @@ class AsynchronizerCoreSpec
     }
     val report = asynchronizer.generateAsynchronizerExecutionReport
     logger.debug("Printing Execution Report")
-    logger.info(report.toString)
+    logger.debug(report.toString)
     assert(report.executed_tasks > report.passed_tasks)
     assert(report.failed_tasks > 0)
   }
@@ -137,7 +137,7 @@ class AsynchronizerCoreSpec
     SleepCurrentThreadInMillis(4000)
     val report = asynchronizer.generateAsynchronizerExecutionReport
     logger.info(s"Printing Execution Report")
-    logger.info(report.toString)
+    logger.debug(report.toString)
     assert(asynchronizer.state_current == asynchronizer.state_failed)
     assert(report.total_tasks > report.executed_tasks)
     assert(report.failed_tasks > 0)

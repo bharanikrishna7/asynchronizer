@@ -55,8 +55,8 @@ class AsynchronizerSpec
     )
     assert(asynchronizer.getFailureTaskCount == 0)
     val report = asynchronizer.generateExecutionReport
-    logger.info("Asynchronizer Execution Report ...")
-    logger.info(report.toString)
+    logger.debug("Asynchronizer Execution Report ...")
+    logger.debug(report.toString)
   }
 
   "Asynchronizer" should "correctly execute all tasks when allow failures is set to true but we can gurantee tasks will pass" in {
@@ -96,8 +96,8 @@ class AsynchronizerSpec
     )
     assert(asynchronizer.getFailureTaskCount == 0)
     val report = asynchronizer.generateExecutionReport
-    logger.info("Asynchronizer Execution Report ...")
-    logger.info(report.toString)
+    logger.debug("Asynchronizer Execution Report ...")
+    logger.debug(report.toString)
   }
 
   "Asynchronizer" should "correctly execute all tasks when allow failures is set to true but we can gurantee some tasks will fail" in {
@@ -146,8 +146,8 @@ class AsynchronizerSpec
     )
     assert(asynchronizer.getFailureTaskCount > 0)
     val report = asynchronizer.generateExecutionReport
-    logger.info("Asynchronizer Execution Report ...")
-    logger.info(report.toString)
+    logger.debug("Asynchronizer Execution Report ...")
+    logger.debug(report.toString)
   }
 
   "Asynchronizer" should "change state to failed when allow failures is set to false and we can gurantee some tasks will fail" in {
@@ -197,7 +197,7 @@ class AsynchronizerSpec
     )
     assert(asynchronizer.getFailureTaskCount > 0)
     val report = asynchronizer.generateExecutionReport
-    logger.info("Asynchronizer Execution Report ...")
-    logger.info(report.toString)
+    logger.debug("Asynchronizer Execution Report ...")
+    logger.debug(report.toString)
   }
 }

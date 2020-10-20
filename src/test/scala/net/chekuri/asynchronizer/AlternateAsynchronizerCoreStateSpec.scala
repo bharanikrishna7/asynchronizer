@@ -7,14 +7,14 @@ import org.scalatest.flatspec.AnyFlatSpec
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AlternateAsynchronizerCoreStateSpec
+class AlternateAlternateAsynchronizerCoreStateSpec
     extends AnyFlatSpec
     with LoggingBehavior
     with ThreadBehavior {
   val executionContext: ExecutionContext =
     ExecutionContext.fromExecutor(new ForkJoinPool())
 
-  "AsynchronizerCoreState" should "correctly change states when when fail on exception is set to false and we can guarantee no exception tasks" in {
+  "AlternateAsynchronizerCoreState" should "correctly change states when when fail on exception is set to false and we can guarantee no exception tasks" in {
     var tasks: List[Future[Long]] = List[Future[Long]]()
     logger.info("Populating tasks.")
     for (index <- 0 to 63) {
@@ -50,16 +50,16 @@ class AlternateAsynchronizerCoreStateSpec
     logger.info("All State Transitions have completed as expected.")
     val report = asynchronizer.generateAsynchronizerExecutionReport
     logger.debug("Printing Execution Report")
-    logger.info(report.toString)
+    logger.debug(report.toString)
     assert(report.total_tasks == report.executed_tasks)
     assert(report.executed_tasks == report.passed_tasks)
     assert(report.failed_tasks == 0)
   }
 
-  "AsynchronizerCoreState" should "correctly change states when when fail on exception is set to true and we can guarantee no exception tasks" in {
+  "AlternateAsynchronizerCoreState" should "correctly change states when when fail on exception is set to true and we can guarantee no exception tasks" in {
     var tasks: List[Future[Long]] = List[Future[Long]]()
     logger.info("Populating tasks.")
-    for (index <- 0 to 8) {
+    for (index <- 0 to 63) {
       tasks = FutureTasks.futureRandomNumberTask(
         Long.MaxValue,
         30,
@@ -82,7 +82,7 @@ class AlternateAsynchronizerCoreStateSpec
     logger.info("Asynchronizer should now be in 'ProcessingAsynchronizerState'")
     assert(asynchronizer.state_current == asynchronizer.state_processing)
     while (!asynchronizer.ready.get()) {
-      SleepCurrentThreadInMillis(100)
+      SleepCurrentThreadInMillis(1000)
     }
     SleepCurrentThread(4)
     logger.info(
@@ -93,16 +93,16 @@ class AlternateAsynchronizerCoreStateSpec
     logger.info("All State Transitions have completed as expected.")
     val report = asynchronizer.generateAsynchronizerExecutionReport
     logger.debug("Printing Execution Report")
-    logger.info(report.toString)
+    logger.debug(report.toString)
     assert(report.total_tasks == report.executed_tasks)
     assert(report.executed_tasks == report.passed_tasks)
     assert(report.failed_tasks == 0)
   }
 
-  "AsynchronizerCoreState" should "correctly change states when when fail on exception is set to false and we can guarantee few exception tasks" in {
+  "AlternateAsynchronizerCoreState" should "correctly change states when when fail on exception is set to false and we can guarantee few exception tasks" in {
     var tasks: List[Future[Long]] = List[Future[Long]]()
     logger.info("Populating tasks.")
-    for (index <- 0 to 24) {
+    for (index <- 0 to 63) {
       if (index < 20) {
         tasks = FutureTasks.futureRandomNumberTask(
           Long.MaxValue,
@@ -113,7 +113,7 @@ class AlternateAsynchronizerCoreStateSpec
       } else {
         tasks = FutureTasks.futureRandomNumberTask(
           Long.MaxValue,
-          10,
+          30,
           false,
           executionContext
         ) :: tasks
@@ -145,12 +145,12 @@ class AlternateAsynchronizerCoreStateSpec
     logger.info("All State Transitions have completed as expected.")
     val report = asynchronizer.generateAsynchronizerExecutionReport
     logger.debug("Printing Execution Report")
-    logger.info(report.toString)
+    logger.debug(report.toString)
     assert(report.executed_tasks > report.passed_tasks)
     assert(report.failed_tasks > 0)
   }
 
-  "AsynchronizerCoreState" should "correctly change states when when fail on exception is set to true and we can guarantee few exception tasks" in {
+  "AlternateAsynchronizerCoreState" should "correctly change states when when fail on exception is set to true and we can guarantee few exception tasks" in {
     var tasks: List[Future[Long]] = List[Future[Long]]()
     logger.info("Populating tasks.")
     for (index <- 0 to 199) {
@@ -196,6 +196,6 @@ class AlternateAsynchronizerCoreStateSpec
     assert(asynchronizer.state_current == asynchronizer.state_failed)
     logger.info("All State Transitions have completed as expected.")
     val report = asynchronizer.generateAsynchronizerExecutionReport
-    logger.info(report.toString)
+    logger.debug(report.toString)
   }
 }

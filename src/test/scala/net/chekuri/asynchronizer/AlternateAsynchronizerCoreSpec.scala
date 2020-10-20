@@ -50,8 +50,8 @@ class AlternateAsynchronizerCoreSpec
       asynchronizer.getResultsPopulatedCount == asynchronizer.getSuccessResultsCount
     )
     assert(asynchronizer.getFailResultsCount == 0)
-    logger.info("Execution Report")
-    asynchronizer.getResults().map(x => logger.info(x))
+    logger.debug("Execution Report")
+    asynchronizer.getResults().map(x => logger.debug(x))
   }
 
   "AlternateAsynchronizerCore" should "correctly execute all tasks when allow failures is set to true but we can gurantee tasks will pass" in {
@@ -90,8 +90,8 @@ class AlternateAsynchronizerCoreSpec
       asynchronizer.getResultsPopulatedCount == asynchronizer.getSuccessResultsCount
     )
     assert(asynchronizer.getFailResultsCount == 0)
-    logger.info("Execution Report")
-    asynchronizer.getResults().map(x => logger.info(x))
+    logger.debug("Execution Report")
+    asynchronizer.getResults().map(x => logger.debug(x))
   }
 
   "AlternateAsynchronizerCore" should "correctly throw exception when allow failures is set to false and we can guarantee few exception tasks" in {
@@ -136,8 +136,8 @@ class AlternateAsynchronizerCoreSpec
     )
     assert(report.failed_tasks > 0)
     assertThrows[Exception](asynchronizer.getResults().map(x => logger.info(x)))
-    logger.info("Execution Report")
-    logger.info(report.toString)
+    logger.debug("Execution Report")
+    logger.debug(report.toString)
   }
 
   "AlternateAsynchronizerCore" should "not throw exception when allow failures is set to true and we can guarantee few exception tasks" in {
@@ -182,7 +182,7 @@ class AlternateAsynchronizerCoreSpec
       report.executed_tasks > report.passed_tasks
     )
     assert(report.failed_tasks > 0)
-    logger.info("Execution Report")
-    logger.info(report.toString)
+    logger.debug("Execution Report")
+    logger.debug(report.toString)
   }
 }

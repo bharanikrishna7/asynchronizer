@@ -20,7 +20,7 @@ class AsynchronizerCoreStateSpec
     for (index <- 0 to 63) {
       tasks = FutureTasks.futureRandomNumberTask(
         Long.MaxValue,
-        100,
+        30,
         false,
         executionContext
       ) :: tasks
@@ -45,12 +45,13 @@ class AsynchronizerCoreStateSpec
     logger.info(
       "We ensured that at least 1 task will fail. And Allow Failures = FALSE"
     )
+    SleepCurrentThreadInMillis(4000)
     logger.info("Asynchronizer should now be in 'CompletedAsynchronizerState'")
     assert(asynchronizer.state_current == asynchronizer.state_completed)
     logger.info("All State Transitions have completed as expected.")
     val report = asynchronizer.generateAsynchronizerExecutionReport
     logger.debug("Printing Execution Report")
-    logger.info(report.toString)
+    logger.debug(report.toString)
     assert(report.total_tasks == report.executed_tasks)
     assert(report.executed_tasks == report.passed_tasks)
     assert(report.failed_tasks == 0)
@@ -87,12 +88,13 @@ class AsynchronizerCoreStateSpec
     logger.info(
       "We ensured that at least 1 task will fail. And Allow Failures = FALSE"
     )
+    SleepCurrentThreadInMillis(4000)
     logger.info("Asynchronizer should now be in 'CompletedAsynchronizerState'")
     assert(asynchronizer.state_current == asynchronizer.state_completed)
     logger.info("All State Transitions have completed as expected.")
     val report = asynchronizer.generateAsynchronizerExecutionReport
     logger.debug("Printing Execution Report")
-    logger.info(report.toString)
+    logger.debug(report.toString)
     assert(report.total_tasks == report.executed_tasks)
     assert(report.executed_tasks == report.passed_tasks)
     assert(report.failed_tasks == 0)
@@ -143,7 +145,7 @@ class AsynchronizerCoreStateSpec
     logger.info("All State Transitions have completed as expected.")
     val report = asynchronizer.generateAsynchronizerExecutionReport
     logger.debug("Printing Execution Report")
-    logger.info(report.toString)
+    logger.debug(report.toString)
     assert(report.executed_tasks > report.passed_tasks)
     assert(report.failed_tasks > 0)
   }
@@ -194,6 +196,6 @@ class AsynchronizerCoreStateSpec
     assert(asynchronizer.state_current == asynchronizer.state_failed)
     logger.info("All State Transitions have completed as expected.")
     val report = asynchronizer.generateAsynchronizerExecutionReport
-    logger.info(report.toString)
+    logger.debug(report.toString)
   }
 }
