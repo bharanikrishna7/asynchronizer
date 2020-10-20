@@ -84,6 +84,7 @@ class AlternateAsynchronizerCoreStateSpec
     while (!asynchronizer.ready.get()) {
       SleepCurrentThreadInMillis(100)
     }
+    SleepCurrentThread(4)
     logger.info(
       "We ensured that at least 1 task will fail. And Allow Failures = FALSE"
     )
@@ -138,6 +139,7 @@ class AlternateAsynchronizerCoreStateSpec
     logger.info(
       "We ensured that at least 1 task will fail. And Allow Failures = FALSE"
     )
+    SleepCurrentThread(4)
     logger.info("Asynchronizer should now be in 'CompletedAsynchronizerState'")
     assert(asynchronizer.state_current == asynchronizer.state_completed)
     logger.info("All State Transitions have completed as expected.")

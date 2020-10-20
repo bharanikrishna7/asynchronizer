@@ -1,5 +1,5 @@
 name := "asynchronizer"
-version := "0.5"
+version := "0.6"
 organization := "net.chekuri"
 developers := List(
   Developer(

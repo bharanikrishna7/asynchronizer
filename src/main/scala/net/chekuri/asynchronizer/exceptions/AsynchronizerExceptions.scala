@@ -11,4 +11,11 @@ object AsynchronizerExceptions extends LoggingBehavior {
         s"$AsynchronizerTaskInterruptedExceptionMessage. Associated Thread ID : $thread_id"
       )
 
+  val AsynchronizerResultsNotReadyExceptionMessage: String =
+    "Tasks are still executing. Cannot retrieve tasks before they have finished execution."
+
+  class AsynchronizerResultsNotReadyException(expected: Int, actual: Int)
+      extends NullPointerException(
+        s"$AsynchronizerResultsNotReadyExceptionMessage. Current task execution progress : $actual | $expected"
+      )
 }
