@@ -4,8 +4,7 @@ import java.util.concurrent.ForkJoinPool
 
 import net.chekuri.asynchronizer.AsynchronizerConstants.{
   AlternateAsynchronizerExecutionReport,
-  AlternateAsynchronizerExecutionResults,
-  AsynchronizerExecutionReport
+  AlternateAsynchronizerExecutionResults
 }
 import net.chekuri.asynchronizer.behaviors.GuidBehavior
 import net.chekuri.asynchronizer.state.{

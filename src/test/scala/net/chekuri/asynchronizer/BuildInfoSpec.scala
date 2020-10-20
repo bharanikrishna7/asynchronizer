@@ -12,7 +12,7 @@ class BuildInfoSpec extends AnyFlatSpec {
 
   "BuildInfo" should "correctly fetch build version" in {
     val actual: String = BuildInfo.version
-    val expected: String = "0.5"
+    val expected: String = "0.6"
     assert(actual == expected)
   }
 
