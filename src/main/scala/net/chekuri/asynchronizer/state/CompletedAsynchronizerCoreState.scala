@@ -1,11 +1,14 @@
 package net.chekuri.asynchronizer.state
 
-import net.chekuri.asynchronizer.Asynchronizer
+import net.chekuri.asynchronizer.AsynchronizerConstants.AsynchronizerStateValues
+import net.chekuri.asynchronizer.AsynchronizerConstants.AsynchronizerStateValues.CompletedAsynchronizerCoreState
+import net.chekuri.asynchronizer.AsynchronizerCore
 import net.chekuri.asynchronizer.task.TaskConstants
 
-class CompletedAsynchronizerState[T](asynchronizer: Asynchronizer[T])
-    extends AbstractAsynchronizerState[T] {
-  override val name: String = "CompletedAsynchronizerState"
+class CompletedAsynchronizerCoreState[T](asynchronizer: AsynchronizerCore[T])
+    extends AbstractAsynchronizerCoreState[T] {
+  override val name: AsynchronizerStateValues.Value =
+    CompletedAsynchronizerCoreState
 
   override def results(): Array[TaskConstants.TaskExecutionResults[T]] = {
     asynchronizer.asynchronizer_results
