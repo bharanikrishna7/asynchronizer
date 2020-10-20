@@ -151,19 +151,19 @@ class AsynchronizerCoreStateSpec
   "AsynchronizerCoreState" should "correctly change states when when fail on exception is set to true and we can guarantee few exception tasks" in {
     var tasks: List[Future[Long]] = List[Future[Long]]()
     logger.info("Populating tasks.")
-    for (index <- 0 to 63) {
-      if (index < 20 || index > 40) {
-        val timeout = FutureTasks.randomizer.nextInt(100)
+    for (index <- 0 to 199) {
+      val timeout = FutureTasks.randomizer.nextInt(100)
+      if (index > 150) {
         tasks = FutureTasks.futureRandomNumberTask(
           Long.MaxValue,
-          100,
+          timeout,
           true,
           executionContext
         ) :: tasks
       } else {
         tasks = FutureTasks.futureRandomNumberTask(
           Long.MaxValue,
-          10,
+          timeout,
           false,
           executionContext
         ) :: tasks
@@ -186,6 +186,7 @@ class AsynchronizerCoreStateSpec
     while (!asynchronizer.ready.get()) {
       SleepCurrentThreadInMillis(1000)
     }
+    SleepCurrentThreadInMillis(4000)
     logger.info(
       "We ensured that at least 1 task will fail. And Allow Failures = FALSE"
     )
