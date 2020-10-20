@@ -1,10 +1,11 @@
 package net.chekuri.asynchronizer.state
 
+import net.chekuri.asynchronizer.AsynchronizerConstants.AsynchronizerStateValues
 import net.chekuri.asynchronizer.task.AsynchronizerTask
 import net.chekuri.asynchronizer.task.TaskConstants.TaskExecutionResults
 
-trait AbstractAsynchronizerState[T] {
-  val name: String
+trait AbstractAsynchronizerCoreState[T] {
+  val name: AsynchronizerStateValues.Value
 
   /** Method to initialize task.
     */
@@ -16,7 +17,7 @@ trait AbstractAsynchronizerState[T] {
 
   /** Method to start processing a task.
     */
-  def process(): Unit = {
+  def process(): List[String] = {
     throw new Exception(
       s"Cannot process Asynchronizer Tasks when Asynchronizer is in '$name' State. Asynchronizer needs to be in Initialized State to call this function."
     )

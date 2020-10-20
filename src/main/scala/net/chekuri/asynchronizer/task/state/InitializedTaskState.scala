@@ -25,7 +25,7 @@ class InitializedTaskState[T](asynchronizerTask: AsynchronizerTask[T])
     * to async task and update the states
     * and results (or) exception in background.
     */
-  override def process(): Unit = {
+  override def process(): Long = {
     val task: Future[T] = asynchronizerTask.getTask
     logger.debug("Changing state to ProcessingTaskState.")
     asynchronizerTask.changeState(asynchronizerTask.state_processing)
@@ -51,6 +51,9 @@ class InitializedTaskState[T](asynchronizerTask: AsynchronizerTask[T])
           asynchronizerTask.changeState(asynchronizerTask.state_failure)
         }
     }
+    val current_thread_id: Long = getCurrentThreadId
+    logger.info(s"started processing task on thread : $current_thread_id")
+    current_thread_id
   }
 
   /** Method to check if we should update

@@ -16,7 +16,7 @@ trait AbstractTaskState[T] {
 
   /** Method to start processing a task.
     */
-  def process(): Unit = {
+  def process(): Long = {
     throw new Exception(
       s"Cannot process task when Task is in '$name' State. Task needs to be in Initialized State to call this function."
     )

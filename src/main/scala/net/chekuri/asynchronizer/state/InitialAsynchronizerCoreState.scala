@@ -1,6 +1,7 @@
 package net.chekuri.asynchronizer.state
 
-import net.chekuri.asynchronizer.Asynchronizer
+import net.chekuri.asynchronizer.AsynchronizerConstants.AsynchronizerStateValues.InitialAsynchronizerCoreState
+import net.chekuri.asynchronizer.{AsynchronizerConstants, AsynchronizerCore}
 import net.chekuri.asynchronizer.task.AsynchronizerTask
 
 import scala.concurrent.ExecutionContext
@@ -9,9 +10,10 @@ import scala.concurrent.ExecutionContext
   * @param asynchronizer Asynchronizer
   * @tparam T Data type associated with the result.
   */
-class InitialAsynchronizerState[T](asynchronizer: Asynchronizer[T])
-    extends AbstractAsynchronizerState[T] {
-  override val name = "InitialAsynchronizerState"
+class InitialAsynchronizerCoreState[T](asynchronizer: AsynchronizerCore[T])
+    extends AbstractAsynchronizerCoreState[T] {
+  override val name: AsynchronizerConstants.AsynchronizerStateValues.Value =
+    InitialAsynchronizerCoreState
   implicit val ec: ExecutionContext = asynchronizer.getExecutionContext
 
   /** Method to validate that asynchronizer has been initialized properly

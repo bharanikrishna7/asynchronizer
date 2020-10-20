@@ -1,19 +1,14 @@
 package net.chekuri.asynchronizer.task
 
-object TaskConstants {
-  private val standardAsynchronizerTaskInterruptedExceptionMessage: String =
-    "Thread was interrupted"
-  class AsynchronizerTaskInterruptedException(thread_id: Long)
-      extends InterruptedException(
-        s"$standardAsynchronizerTaskInterruptedExceptionMessage. Associated Thread ID : $thread_id"
-      )
+import net.chekuri.asynchronizer.exceptions.AsynchronizerTaskExceptions._
 
+object TaskConstants {
   def checkIfAsynchronizerTaskInterruptedException(
       exception: Throwable
   ): Boolean = {
     if (
       exception.getMessage.contains(
-        standardAsynchronizerTaskInterruptedExceptionMessage
+        AsynchronizerTaskInterruptedExceptionMessage
       ) && exception.getClass.getName.equals(
         new AsynchronizerTaskInterruptedException(
           -1

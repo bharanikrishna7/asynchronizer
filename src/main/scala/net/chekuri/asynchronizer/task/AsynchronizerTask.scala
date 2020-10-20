@@ -1,10 +1,11 @@
 package net.chekuri.asynchronizer.task
 
+import java.util.UUID
 import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.atomic.AtomicBoolean
 
 import net.chekuri.asynchronizer.behaviors.{LoggingBehavior, ThreadBehavior}
-import net.chekuri.asynchronizer.task.TaskConstants.AsynchronizerTaskInterruptedException
+import net.chekuri.asynchronizer.exceptions.AsynchronizerTaskExceptions.AsynchronizerTaskInterruptedException
 import net.chekuri.asynchronizer.task.state._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -16,6 +17,7 @@ import scala.concurrent.{ExecutionContext, Future}
   */
 class AsynchronizerTask[T](
     task: Future[T],
+    guid: String = UUID.randomUUID().toString,
     executionContext: ExecutionContext =
       ExecutionContext.fromExecutor(new ForkJoinPool())
 ) extends LoggingBehavior
@@ -84,9 +86,8 @@ class AsynchronizerTask[T](
   /** Method to start processing task assigned
     * to async task (this) object.
     */
-  def process(): Unit = {
+  def process(): Long = {
     state_current.process()
-    logger.info(s"started processing task on thread : $getCurrentThreadId")
   }
 
   /** Method to interrupt current task.
@@ -148,4 +149,6 @@ class AsynchronizerTask[T](
   def cancel(): Unit = {
     this.interrupt
   }
+
+  def getTaskGuid: String = guid
 }

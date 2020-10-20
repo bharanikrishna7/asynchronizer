@@ -2,13 +2,15 @@ package net.chekuri.asynchronizer.state
 
 import java.lang.System.nanoTime
 
-import net.chekuri.asynchronizer.Asynchronizer
+import net.chekuri.asynchronizer.AsynchronizerConstants.AsynchronizerStateValues.ProcessingAsynchronizerCoreState
 import net.chekuri.asynchronizer.behaviors.LoggingBehavior
+import net.chekuri.asynchronizer.{AsynchronizerConstants, AsynchronizerCore}
 
-class ProcessingAsynchronizerState[T](asynchronizer: Asynchronizer[T])
-    extends AbstractAsynchronizerState[T]
+class ProcessingAsynchronizerCoreState[T](asynchronizer: AsynchronizerCore[T])
+    extends AbstractAsynchronizerCoreState[T]
     with LoggingBehavior {
-  override val name: String = "ProcessingAsynchronizerState"
+  override val name: AsynchronizerConstants.AsynchronizerStateValues.Value =
+    ProcessingAsynchronizerCoreState
 
   override def interrupt(): Unit = {
     logger.debug("Setting is_cancelled to true for Asynchronizer.")

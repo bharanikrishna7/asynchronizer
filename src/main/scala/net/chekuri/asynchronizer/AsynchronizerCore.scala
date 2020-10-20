@@ -1,8 +1,7 @@
 package net.chekuri.asynchronizer
 
-import java.lang.System.nanoTime
 import java.util.concurrent.ForkJoinPool
-import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger}
+import java.util.concurrent.atomic.AtomicBoolean
 
 import net.chekuri.asynchronizer.AsynchronizerConstants.AsynchronizerExecutionReport
 import net.chekuri.asynchronizer.behaviors.{LoggingBehavior, ThreadBehavior}
@@ -12,7 +11,7 @@ import net.chekuri.asynchronizer.task.TaskConstants.TaskExecutionResults
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class Asynchronizer[T](
+class AsynchronizerCore[T](
     tasks: List[Future[T]],
     allowFailures: Boolean = false,
     executionContext: ExecutionContext =
@@ -33,28 +32,32 @@ class Asynchronizer[T](
   var execution_end_nanotime: Long = 0
   logger.trace("Class variables have been  successfully initialized.")
 
-  val state_initial: AbstractAsynchronizerState[T] =
-    new InitialAsynchronizerState[T](this)
-  val state_initialized: AbstractAsynchronizerState[T] =
-    new InitializedAsynchronizerState[T](this)
-  val state_processing: AbstractAsynchronizerState[T] =
-    new ProcessingAsynchronizerState[T](this)
-  val state_completed: AbstractAsynchronizerState[T] =
-    new CompletedAsynchronizerState[T](this)
-  val state_failed: AbstractAsynchronizerState[T] =
-    new FailedAsynchronizerState[T](this)
-  val state_interrupted: AbstractAsynchronizerState[T] =
-    new InterruptedAsynchronizerState[T](this)
+  val state_initial: AbstractAsynchronizerCoreState[T] =
+    new InitialAsynchronizerCoreState[T](this)
+  val state_initialized: AbstractAsynchronizerCoreState[T] =
+    new InitializedAsynchronizerCoreState[T](this)
+  val state_processing: AbstractAsynchronizerCoreState[T] =
+    new ProcessingAsynchronizerCoreState[T](this)
+  val state_completed: AbstractAsynchronizerCoreState[T] =
+    new CompletedAsynchronizerCoreState[T](this)
+  val state_failed: AbstractAsynchronizerCoreState[T] =
+    new FailedAsynchronizerCoreState[T](this)
+  val state_interrupted: AbstractAsynchronizerCoreState[T] =
+    new InterruptedAsynchronizerCoreState[T](this)
 
-  var state_current: AbstractAsynchronizerState[T] = this.state_initial
+  var state_current: AbstractAsynchronizerCoreState[T] = this.state_initial
   // validate state variables and initialize tasks as Asynchronizer Tasks.
   val asynchronizer_tasks: Array[AsynchronizerTask[T]] =
-    state_current.initialize()
+    if (state_current != null) {
+      // update state to initialized.
+      val initialized = state_current.initialize()
+      this.changeState(state_initialized)
+      initialized
+    } else {
+      new Array[AsynchronizerTask[T]](total_task_count)
+    }
   val asynchronizer_results: Array[TaskExecutionResults[T]] =
     new Array[TaskExecutionResults[T]](total_task_count)
-
-  // update state to initialized.
-  this.changeState(state_initialized)
 
   /** Method to fetch the execution context assigned to
     * Asynchronous task object.
@@ -66,12 +69,26 @@ class Asynchronizer[T](
   /** Method to start processing asynchronous tasks enqueued
     * by Asynchronizer.
     */
-  def process(): Unit = {
-    execution_start_nanotime = nanoTime
-    state_current.process()
+  def process(): List[String] = {
+    val results: List[String] = state_current.process()
     logger.info(
       "Asynchronizer has nofitied all Asynchronus tasks to start executing."
     )
+    results
+  }
+
+  /** Method to interrupt processing tasks. This process
+    * will ask the spawned child threads to interrupt. This
+    * will hopefully notify Garbage Collector to cleanup
+    * the spawned threads and conserve memory (mostly) and a little
+    * but of CPU Time.
+    *
+    * This method is very useful when the execution context is shared
+    * between lot of tasks and we would want to interrupt the tasks
+    * spawned by asynchronizer-core safely.
+    */
+  def interrupt(): Unit = {
+    state_current.interrupt()
   }
 
   /** Method to retrieve results.
@@ -95,7 +112,7 @@ class Asynchronizer[T](
     *
     * @param nextState new state value.
     */
-  def changeState(nextState: AbstractAsynchronizerState[T]): Unit = {
+  def changeState(nextState: AbstractAsynchronizerCoreState[T]): Unit = {
     logger.debug(s"Current State: ${state_current.name}")
     logger.debug(s"Next State: ${nextState.name}")
     logger.trace(s"changing state.")
@@ -124,7 +141,8 @@ class Asynchronizer[T](
       failed_tasks = this.getFailResultsCount,
       duration_in_ms = computeExecutionTimeInMillis,
       failures_allowed = this.allowFailures,
-      was_cancelled = this.is_cancelled.get()
+      was_cancelled = this.is_cancelled.get(),
+      status = this.state_current.name.toString
     )
   }
 
@@ -143,6 +161,15 @@ class Asynchronizer[T](
     }
   }
 
+  /** Method to fetch the count of total executed
+    * task count.
+    *
+    * Can be used in conjunction with success / fail
+    * result count or with total task count to check
+    * variaous aspects of task execution progress.
+    *
+    * @return total executed task count.
+    */
   def getResultsPopulatedCount: Int = {
     var value: Int = 0
     for (result <- asynchronizer_results) {
@@ -153,6 +180,12 @@ class Asynchronizer[T](
     value
   }
 
+  /** Method to fetch the count of tasks which executed
+    * without any exceptions.
+    *
+    * @return success task count (does not talk about
+    *         executing / yet to execute tasks)
+    */
   def getSuccessResultsCount: Int = {
     var value: Int = 0
     for (result <- asynchronizer_results) {
@@ -163,6 +196,12 @@ class Asynchronizer[T](
     value
   }
 
+  /** Method to fetch the count of exceptions thrown by the
+    * queued tasks which were produced while executing the
+    * enqueued tasks.
+    * @return failed task count (does not talk about
+    *         executing / yet to execute tasks)
+    */
   def getFailResultsCount: Int = {
     var value: Int = 0
     for (result <- asynchronizer_results) {
